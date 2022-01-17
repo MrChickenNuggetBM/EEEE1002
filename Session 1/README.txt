@@ -1,0 +1,1 @@
+In the 'MotorTest' directory you can find the code needed to run the motors for approximately 10m.

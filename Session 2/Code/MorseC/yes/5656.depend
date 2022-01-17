@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1638200106 source:c:\users\eeymg2\onedrive - the university of nottingham\year 1\applied electrical and electronic engineering construction project\session 2\arduino\morsec\5656\main.c
+	<stdlib.h>
+	<stdio.h>
+
+1638276567 source:c:\users\eeymg2\onedrive - the university of nottingham\year 1\applied electrical and electronic engineering construction project\session 2\arduino\morsec\yes\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
