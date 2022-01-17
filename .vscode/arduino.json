@@ -2,5 +2,5 @@
     "configuration": "cpu=atmega328",
     "board": "arduino:avr:nano",
     "programmer": "arduino:avrispmkii",
-    "sketch": "Session 3\\main\\main.ino"
+    "sketch": "Session 3\\EEEBot_ArduinoNano_firmware\\EEEBot_ArduinoNano_firmware.ino"
 }
