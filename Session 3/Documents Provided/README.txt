@@ -1,1 +1,1 @@
-Please note that the files contained in this folder were obtained from the University of Nottingham Moodle for this module.
+Please note that the files contained in this folder were obtained from the University of Nottingham Moodle for the "EEEE1002 - Applied Electrical and Electronic Engineering Construction Project" module.
