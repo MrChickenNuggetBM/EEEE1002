@@ -12,10 +12,10 @@
 // ** marks where you need to insert the pin number or state
 
 // name the motor control pins - replace the ** with your pin number
-//#define PWMa 14
+#define PWMa 14
 #define PWMb 27
 #define PWMc 26
-//#define PWMd 25
+#define PWMd 25
 
 const int frequency = 5000;
 const int resolution = 10;
