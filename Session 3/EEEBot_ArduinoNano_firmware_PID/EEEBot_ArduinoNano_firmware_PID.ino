@@ -10,22 +10,6 @@
 #define OPTICAL_5 A6
 #define OPTICAL_6 A7
 
-int read_1, read_2, read_3, read_4, read_5, read_6 = 0;
-float weighted_average = 0;
-int min_1 = 483;
-int min_2 = 554;
-int min_3 = 416;
-int min_4 = 499;
-int min_5 = 530;
-int min_6 = 536;
-int max_ = 1017;
-
-float error = 0.05;
-
-int stable_speed = 170;
-
-float kp = 1, kd = 1, ki = 1;
-
 void setup()
 {
   Serial.begin(115200);
@@ -39,7 +23,16 @@ void setup()
 
 void loop()
 {
-  //reads the voltage level from the sensors
+  int read_1, read_2, read_3, read_4, read_5, read_6 = 0;
+  float weighted_average = 0;
+  int min_1 = 483;
+  int min_2 = 554;
+  int min_3 = 416;
+  int min_4 = 499;
+  int min_5 = 530;
+  int min_6 = 536;
+  int max_ = 1017;
+  // reads the voltage level from the sensors
   read_1 = analogRead(OPTICAL_1);
   read_2 = analogRead(OPTICAL_2);
   read_3 = analogRead(OPTICAL_3);
@@ -47,7 +40,7 @@ void loop()
   read_5 = analogRead(OPTICAL_5);
   read_6 = analogRead(OPTICAL_6);
 
-  //constrains the values to a specified range, to disallow extremes
+  // constrains the values to a specified range, to disallow extremes
   read_1 = constrain(read_1, min_1, max_);
   read_2 = constrain(read_2, min_2, max_);
   read_3 = constrain(read_3, min_3, max_);
@@ -55,15 +48,15 @@ void loop()
   read_5 = constrain(read_5, min_5, max_);
   read_6 = constrain(read_6, min_6, max_);
 
-  //maps the values into the 0 to 255 range
-  read_1 = map(read_1, min_1, max_, 0, 255);
-  read_2 = map(read_2, min_2, max_, 0, 255);
-  read_3 = map(read_3, min_3, max_, 0, 255);
-  read_4 = map(read_4, min_4, max_, 0, 255);
-  read_5 = map(read_5, min_5, max_, 0, 255);
-  read_6 = map(read_6, min_6, max_, 0, 255);
+  // maps the values into the 1 to 255 range
+  read_1 = map(read_1, min_1, max_, 1, 254);
+  read_2 = map(read_2, min_2, max_, 1, 254);
+  read_3 = map(read_3, min_3, max_, 1, 254);
+  read_4 = map(read_4, min_4, max_, 1, 254);
+  read_5 = map(read_5, min_5, max_, 1, 254);
+  read_6 = map(read_6, min_6, max_, 1, 254);
 
-  //makes black a higher signal than white
+  // makes black a higher signal than white
   read_1 = 255 - read_1;
   read_2 = 255 - read_2;
   read_3 = 255 - read_3;
@@ -71,9 +64,23 @@ void loop()
   read_5 = 255 - read_5;
   read_6 = 255 - read_6;
 
-  //calcuates the weighted average and determines the pid speed
+  Serial.print("sensor 1: ");
+  Serial.print(read_1);
+  Serial.print(", sensor 2: ");
+  Serial.print(read_2);
+  Serial.print(", sensor 3: ");
+  Serial.print(read_3);
+  Serial.print(", sensor 4: ");
+  Serial.print(read_4);
+  Serial.print(", sensor 5: ");
+  Serial.print(read_5);
+  Serial.print(", sensor 6: ");
+  Serial.println(read_6);
+
+  // calcuates the weighted average and determines the pid speed
   weighted_average = ((read_1 * 3.25) + (read_2 * 1.95) + (read_3 * 0.65) + (read_4 * -0.65) + (read_5 * -1.95) + (read_6 * -3.25)) / (read_1 + read_2 + read_3 + read_4 + read_5 + read_6);
   Serial.println(weighted_average);
+
   pid(weighted_average);
 }
 /*---------------------------------------------------------------------------
@@ -114,16 +121,21 @@ void slaveWrite(int leftMotor, int rightMotor)
   -----------------------------------------------------------------------------*/
 void pid(float weighted_average)
 {
+  int stable_speed = 170;
+  float kp = 100, kd = 0, ki = 1.5;
+
   static float previous = 0;
   static float integral = 0;
   integral += weighted_average;
 
-  float offset = kp*weighted_average + ki*integral + kd*(error - previous);
-  
-  previous = weighted_average;
-  
-  int leftSpeed = constrain(stable_speed - offset, -255, 255);
-  int rightSpeed = constrain(stable_speed + offset, -255, 255);
+  float offset = kp * weighted_average + ki * integral + kd * (weighted_average - previous);
 
-  slaveWrite(leftSpeed,rightSpeed);
+  previous = weighted_average;
+
+  //  int leftSpeed = stable_speed - offset;
+  //  int rightSpeed = stable_speed + offset;
+  int leftSpeed = constrain(stable_speed - offset, 0, 255);
+  int rightSpeed = constrain(stable_speed + offset, 0, 255);
+
+  slaveWrite(leftSpeed, rightSpeed);
 }
