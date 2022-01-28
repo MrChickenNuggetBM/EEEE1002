@@ -1,7 +1,4 @@
 {
-    "configuration": "cpu=atmega328old",
     "board": "arduino:avr:nano",
-    "programmer": "arduino:avrispmkii",
-    "sketch": "Session 3\\EEEBot_ArduinoNano_firmware_PID\\EEEBot_ArduinoNano_firmware_PID.ino",
     "port": "COM3"
 }
