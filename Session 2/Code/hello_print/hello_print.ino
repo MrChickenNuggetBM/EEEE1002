@@ -7,13 +7,6 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //  Serial.print("lol");
-
-
-  //  Serial.print("hello");
-  //  delay(100);
-
   digitalWrite(A4, HIGH);
   digitalWrite(A5, HIGH);
   Serial.println("high");

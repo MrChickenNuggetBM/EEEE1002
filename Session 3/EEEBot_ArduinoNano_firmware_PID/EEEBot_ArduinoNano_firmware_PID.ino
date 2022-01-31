@@ -122,7 +122,7 @@ void slaveWrite(int leftMotor, int rightMotor)
 void pid(float weighted_average)
 {
   int stable_speed = 170;
-  float kp = 100, kd = 0, ki = 1.5;
+  float kp = 60, kd = 0, ki = 1;
 
   static float previous = 0;
   static float integral = 0;
@@ -136,6 +136,9 @@ void pid(float weighted_average)
   //  int rightSpeed = stable_speed + offset;
   int leftSpeed = constrain(stable_speed - offset, 0, 255);
   int rightSpeed = constrain(stable_speed + offset, 0, 255);
+
+  if (leftSpeed < 90) leftSpeed = -165 - (90 - leftSpeed);
+  if (rightSpeed < 90) rightSpeed = -165 - (90 - rightSpeed);
 
   slaveWrite(leftSpeed, rightSpeed);
 }
