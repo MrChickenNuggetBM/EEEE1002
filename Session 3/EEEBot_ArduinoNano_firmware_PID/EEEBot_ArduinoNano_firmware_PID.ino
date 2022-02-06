@@ -91,12 +91,17 @@ void loop()
   sends signals to the ESP32 so that it can drive the motors
   -----------------------------------------------------------------------------*/
 void slaveWrite(int leftMotor, int rightMotor)
-{
+{  
+  Serial.print("Left Motor: ");
+  Serial.print(leftMotor);
+  Serial.print(" Right Motor: ");
+  Serial.println(rightMotor);
+  
   WirePacker packer;
 
   packer.write((byte)((leftMotor & 0x0000FF00) >> 8));
   packer.write((byte)(leftMotor & 0x000000FF));
-
+  
   packer.write((byte)((rightMotor & 0x0000FF00) >> 8));
   packer.write((byte)(rightMotor & 0x000000FF));
 
@@ -107,11 +112,8 @@ void slaveWrite(int leftMotor, int rightMotor)
   {
     Wire.write(packer.read());
   }
-  Serial.print("Left Motor: ");
-  Serial.print(leftMotor);
-  Serial.print(" Right Motor: ");
-  Serial.println(rightMotor);
   Wire.endTransmission();
+  delay(100);
 }
 /*---------------------------------------------------------------------------
    Inputs:
@@ -121,8 +123,8 @@ void slaveWrite(int leftMotor, int rightMotor)
   -----------------------------------------------------------------------------*/
 void pid(float weighted_average)
 {
-  int stable_speed = 170;
-  float kp = 60, kd = 0, ki = 1;
+  int stable_speed = 190;
+  float kp = 100, kd = 0, ki = 0.45;
 
   static float previous = 0;
   static float integral = 0;
@@ -137,8 +139,8 @@ void pid(float weighted_average)
   int leftSpeed = constrain(stable_speed - offset, 0, 255);
   int rightSpeed = constrain(stable_speed + offset, 0, 255);
 
-  if (leftSpeed < 90) leftSpeed = -165 - (90 - leftSpeed);
-  if (rightSpeed < 90) rightSpeed = -165 - (90 - rightSpeed);
+  if (leftSpeed < 80) leftSpeed = -165 - (80 - leftSpeed);
+  if (rightSpeed < 80) rightSpeed = -165 - (80 - rightSpeed);
 
   slaveWrite(leftSpeed, rightSpeed);
 }
