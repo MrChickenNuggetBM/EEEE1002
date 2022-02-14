@@ -1,4 +1,6 @@
 {
     "board": "arduino:avr:nano",
-    "port": "COM3"
+    "port": "COM3",
+    "programmer": "arduino:avrispmkii",
+    "sketch": "Session 4\\ESP32_MQTT_EEEBot_Final\\ESP32_MQTT_EEEBot_Final.ino"
 }
