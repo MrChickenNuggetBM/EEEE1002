@@ -1,3 +1,9 @@
+*********************************
+RASPBERRY PI LOGIN DETAILS:
+	HOST NAME: b08ghali
+	PASSWORD: eeymg2
+*********************************
+
 Please note that the files contained in this directory were obtained from the University of Nottingham Moodle for the "EEEE1002 - Applied Electrical and Electronic Engineering Construction Project" module.
 The text below, contains the instructions given on Moodle, and the relevant files for each step.
 
