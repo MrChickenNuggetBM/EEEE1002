@@ -4,6 +4,12 @@ RASPBERRY PI LOGIN DETAILS:
 	PASSWORD: eeymg2
 *********************************
 
+*********************************
+RASPBERRY PI WIFI Details:
+	SSID: b08ghali
+	PASSWORD: _eeymg2_
+*********************************
+
 Please note that the files contained in this directory were obtained from the University of Nottingham Moodle for the "EEEE1002 - Applied Electrical and Electronic Engineering Construction Project" module.
 The text below, contains the instructions given on Moodle, and the relevant files for each step.
 
