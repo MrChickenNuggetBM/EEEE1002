@@ -17,9 +17,8 @@
 
 // --
 
-// Replace the next variables with your SSID/Password combination
-const char *ssid = "REPLACE_WITH_YOUR_SSID";         // CHANGE ME
-const char *password = "REPLACE_WITH_YOUR_PASSWORD"; // CHANGE ME
+const char *ssid = "b08ghali";
+const char *password = "_eeymg2_";
 
 // Add your MQTT Broker IP address, example:
 // const char* mqtt_server = "192.168.1.144";

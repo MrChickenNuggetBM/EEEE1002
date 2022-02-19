@@ -1,6 +1,7 @@
 {
-    "board": "arduino:avr:nano",
+    "board": "esp32:esp32:esp32doit-devkit-v1",
     "port": "COM3",
     "programmer": "arduino:avrispmkii",
-    "sketch": "Session 4\\ESP32_MQTT_EEEBot_Final\\ESP32_MQTT_EEEBot_Final.ino"
+    "sketch": "Session 4\\ESP32_MQTT_EEEBot\\ESP32_MQTT_EEEBot.ino",
+    "configuration": "FlashFreq=80,UploadSpeed=921600,DebugLevel=none"
 }
