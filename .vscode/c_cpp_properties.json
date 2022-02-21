@@ -93,7 +93,7 @@
                 "C:\\Users\\Mohamed Ghali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\cores\\esp32",
                 "C:\\Users\\Mohamed Ghali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\variants\\doitESP32devkitV1",
                 "C:\\Users\\Mohamed Ghali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\libraries\\WiFi\\src",
-                "C:\\Users\\Mohamed Ghali\\OneDrive\\Documents\\Arduino\\libraries\\PubSubClient\\src",
+                "C:\\Users\\Mohamed Ghali\\OneDrive\\Documents\\Arduino\\libraries\\**",
                 "C:\\Users\\Mohamed Ghali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\libraries\\Wire\\src",
                 "c:\\users\\mohamed ghali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\1.22.0-97-gc752ad5-5.2.0\\xtensa-esp32-elf\\include\\c++\\5.2.0",
                 "c:\\users\\mohamed ghali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\1.22.0-97-gc752ad5-5.2.0\\xtensa-esp32-elf\\include\\c++\\5.2.0\\xtensa-esp32-elf",
@@ -102,6 +102,7 @@
                 "c:\\users\\mohamed ghali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\1.22.0-97-gc752ad5-5.2.0\\lib\\gcc\\xtensa-esp32-elf\\5.2.0\\include-fixed",
                 "c:\\users\\mohamed ghali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\1.22.0-97-gc752ad5-5.2.0\\xtensa-esp32-elf\\include",
                 "c:\\users\\mohamed ghali\\appdata\\local\\arduino15\\packages\\esp32\\tools\\xtensa-esp32-elf-gcc\\1.22.0-97-gc752ad5-5.2.0\\xtensa-esp32-elf\\sysroot\\usr\\include",
+                "",
             ],
             "forcedInclude": [
                 "C:\\Users\\Mohamed Ghali\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\cores\\esp32\\Arduino.h"

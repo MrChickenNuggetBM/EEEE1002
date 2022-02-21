@@ -28,15 +28,18 @@ void loop()
 {
   static long lastMillis = 0;
 
-  if ((millis() - lastMillis) > 1000) {
+  if ((millis() - lastMillis) > 1000)
+  {
     WireSlaveRequest slaveReq(Wire, I2C_SLAVE_ADDR, MAX_REQUEST);
     slaveReq.setRetryDelay(5);
 
-    if (slaveReq.request()) {
+    if (slaveReq.request())
+    {
       int x = slaveReq.read();
       Serial.println(x);
     }
-    else {
+    else
+    {
       Serial.println(slaveReq.lastStatusToString());
     }
     lastMillis = millis();
@@ -158,8 +161,10 @@ void pid(float weighted_average)
   int leftSpeed = constrain(stable_speed - offset, 0, 255);
   int rightSpeed = constrain(stable_speed + offset, 0, 255);
 
-  if (leftSpeed < 80) leftSpeed = -165 - (80 - leftSpeed);
-  if (rightSpeed < 80) rightSpeed = -165 - (80 - rightSpeed);
+  if (leftSpeed < 80)
+    leftSpeed = -165 - (80 - leftSpeed);
+  if (rightSpeed < 80)
+    rightSpeed = -165 - (80 - rightSpeed);
 
   slaveWrite(leftSpeed, rightSpeed);
 }
