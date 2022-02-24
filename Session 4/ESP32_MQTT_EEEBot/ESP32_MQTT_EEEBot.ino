@@ -50,6 +50,9 @@ const int pwmChanneld = 3;
 int leftMotor_speed = 0;
 int rightMotor_speed = 0;
 
+int base_speed;
+int speed_change = 0;
+
 // Wifi global variables
 const char *ssid = "B08Ghali was not an imposter";
 const char *password = "0eeymg20";
@@ -139,9 +142,9 @@ void loop()
     lastMsg = now;
 
     // sends the encoder data
-    encoderCount = encoder.getCount();
 
     char encoderString[8];
+    encoderCount = encoder.getCount();
 
     dtostrf(encoderCount, 1, 0, encoderString);
     // Serial.print("Count: ");
@@ -225,7 +228,15 @@ void requestEvent(void)
     Serial.println(kd);
     kd_change = 0;
   }
-  else WireSlave.write(0);
+  else if (speed_change == 1) {
+        WireSlave.print("-s");
+    WireSlave.write(base_speed);
+    Serial.println("-s");
+    Serial.println(base_speed);
+    kd_change = 0;
+  }
+  else
+    WireSlave.write(0);
 }
 
 // this function executes whenever data is received from the master device
@@ -303,14 +314,14 @@ void runRightMotor(int rightMotor_speed)
   rightMotor_speed = constrain(rightMotor_speed, -255, 255); // limits the speed value an 8 bit PWM value - the negative is handled below
   if (rightMotor_speed < 0)
   { // if the value is negative, run the motor 'backwards'
-        ledcWrite(pwmChannela, abs(rightMotor_speed));
-        ledcWrite(pwmChannelb, 0); // abs() takes the absolute value i.e. removes the negative sign, as the PWM value has to be between 0 and 255
+    ledcWrite(pwmChannela, abs(rightMotor_speed));
+    ledcWrite(pwmChannelb, 0); // abs() takes the absolute value i.e. removes the negative sign, as the PWM value has to be between 0 and 255
   }
 
   else
   { // else run the motor 'forwards' or stop
-        ledcWrite(pwmChannela, 0);
-        ledcWrite(pwmChannelb, rightMotor_speed);
+    ledcWrite(pwmChannela, 0);
+    ledcWrite(pwmChannelb, rightMotor_speed);
   }
 }
 
@@ -320,14 +331,14 @@ void runLeftMotor(int leftMotor_speed)
   leftMotor_speed = constrain(leftMotor_speed, -255, 255); // limits the speed value an 8 bit PWM value - the negative is handled below
   if (leftMotor_speed < 0)
   { // if the value is negative, run the motor 'backwards'
-        ledcWrite(pwmChannelc, 0);
-        ledcWrite(pwmChanneld, abs(leftMotor_speed)); // abs() takes the absolute value i.e. removes the negative sign, as the PWM value has to be between 0 and 255
+    ledcWrite(pwmChannelc, 0);
+    ledcWrite(pwmChanneld, abs(leftMotor_speed)); // abs() takes the absolute value i.e. removes the negative sign, as the PWM value has to be between 0 and 255
   }
 
   else
   { // else run the motor 'forwards' or stop
-        ledcWrite(pwmChannelc, leftMotor_speed);
-        ledcWrite(pwmChanneld, 0);
+    ledcWrite(pwmChannelc, leftMotor_speed);
+    ledcWrite(pwmChanneld, 0);
   }
 }
 
@@ -341,14 +352,13 @@ void reconnect()
     // Attempt to connect
     if (client.connect("ESP32Client"))
     {
+      // Add your subscribe topics here
       Serial.println("connected");
       client.subscribe("esp32/kp");
       client.subscribe("esp32/ki");
       client.subscribe("esp32/kd");
       client.subscribe("esp32/led");
-      // Add your subscribe topics here
-      // --
-
+      client.subscribe("esp32/speed");
       // --
     }
     else
@@ -376,21 +386,21 @@ void callback(char *topic, byte *message, unsigned int length)
   }
   Serial.println();
 
-  if ((char)topic[7] == 'p')
+  if (String(topic) == "esp32/kp")
   {
-    kp = messageTemp.toFloat();
+    kp = messageTemp.toInt();
     kp_change = 1;
     Serial.print("kp = ");
     Serial.println(kp);
   }
-  else if ((char)topic[7] == 'i')
+  else if (String(topic) == "esp32/ki")
   {
     ki = messageTemp.toFloat();
     ki_change = 1;
     Serial.print("ki = ");
     Serial.println(ki);
   }
-  else if ((char)topic[7] == 'd')
+  else if (String(topic) == "esp32/kd")
   {
     kd = messageTemp.toFloat();
     kd_change = 1;
@@ -399,8 +409,17 @@ void callback(char *topic, byte *message, unsigned int length)
   }
   else if (String(topic) == "esp32/led")
   {
-    if (messageTemp == "true") toggle = "on";
-    else if (messageTemp == "false") toggle = "off";
+    if (messageTemp == "true")
+      toggle = "on";
+    else if (messageTemp == "false")
+      toggle = "off";
+  }
+  else if (String(topic) == "esp32/speed")
+  {
+    base_speed = messageTemp.toInt();
+    speed_change = 1;
+    Serial.print("Speed Change = ");
+    Serial.println(base_speed);
   }
 
   // Add your subscribed topics here i.e. statements to control GPIOs with MQTT

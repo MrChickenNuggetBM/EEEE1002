@@ -19,6 +19,7 @@
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 float kp = 100, kd = 0, ki = 0.45;
+int stable_speed = 190;
 int read_1, read_2, read_3, read_4, read_5, read_6 = 0;
 
 void setup()
@@ -69,6 +70,12 @@ void loop()
         kd = (float)x / 20;
         Serial.print("Differential constant = ");
         Serial.println(kd);
+      }
+      else if (flag == "-s")
+      {
+        stable_speed = x;
+        Serial.print("Stable speed = ");
+        Serial.println(stable_speed);
       }
     }
     else
@@ -201,8 +208,6 @@ void slaveWrite(int leftMotor, int rightMotor)
   -----------------------------------------------------------------------------*/
 void pid(float weighted_average)
 {
-  int stable_speed = 190;
-
   static float previous = 0;
   static float integral = 0;
   integral += weighted_average;
