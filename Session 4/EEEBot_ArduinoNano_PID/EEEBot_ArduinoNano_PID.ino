@@ -2,6 +2,7 @@
 #include <WirePacker.h> //to send data to ESP32
 #include <Wire.h>
 #include <WireSlaveRequest.h>
+#include <NewPing.h>
 
 #define I2C_SLAVE_ADDR 0x04
 #define MAX_REQUEST 32
@@ -11,6 +12,14 @@
 #define OPTICAL_4 A3
 #define OPTICAL_5 A6
 #define OPTICAL_6 A7
+
+#define TRIGGER_PIN 11
+#define ECHO_PIN 12
+#define MAX_DISTANCE 100
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+float kp = 100, kd = 0, ki = 0.45;
+int read_1, read_2, read_3, read_4, read_5, read_6 = 0;
 
 void setup()
 {
@@ -28,15 +37,39 @@ void loop()
 {
   static long lastMillis = 0;
 
-  if ((millis() - lastMillis) > 1000)
+  if ((millis() - lastMillis) > 100)
   {
     WireSlaveRequest slaveReq(Wire, I2C_SLAVE_ADDR, MAX_REQUEST);
     slaveReq.setRetryDelay(5);
-
     if (slaveReq.request())
     {
-      int x = slaveReq.read();
-      Serial.println(x);
+      String flag;
+      while (1 < slaveReq.available())
+      { // loop through all but the last byte
+        char c = slaveReq.read(); // receive byte as a character
+        flag += c;
+      }
+
+      int x = slaveReq.read(); // receive byte as an integer
+
+      if (flag == "-p")
+      {
+        kp = x;
+        Serial.print("Proportional constant = ");
+        Serial.println(kp);
+      }
+      else if (flag == "-i")
+      {
+        ki = (float)x / 20;
+        Serial.print("Integral constant = ");
+        Serial.println(ki);
+      }
+      else if (flag == "-d")
+      {
+        kd = (float)x / 20;
+        Serial.print("Differential constant = ");
+        Serial.println(kd);
+      }
     }
     else
     {
@@ -45,8 +78,8 @@ void loop()
     lastMillis = millis();
   }
 
-  int read_1, read_2, read_3, read_4, read_5, read_6 = 0;
   float weighted_average = 0;
+
   int min_1 = 483;
   int min_2 = 554;
   int min_3 = 416;
@@ -54,6 +87,7 @@ void loop()
   int min_5 = 530;
   int min_6 = 536;
   int max_ = 1017;
+
   // reads the voltage level from the sensors
   read_1 = analogRead(OPTICAL_1);
   read_2 = analogRead(OPTICAL_2);
@@ -86,22 +120,22 @@ void loop()
   read_5 = 255 - read_5;
   read_6 = 255 - read_6;
 
-  Serial.print("sensor 1: ");
-  Serial.print(read_1);
-  Serial.print(", sensor 2: ");
-  Serial.print(read_2);
-  Serial.print(", sensor 3: ");
-  Serial.print(read_3);
-  Serial.print(", sensor 4: ");
-  Serial.print(read_4);
-  Serial.print(", sensor 5: ");
-  Serial.print(read_5);
-  Serial.print(", sensor 6: ");
-  Serial.println(read_6);
+  // Serial.print("sensor 1: ");
+  // Serial.print(read_1);
+  // Serial.print(", sensor 2: ");
+  // Serial.print(read_2);
+  // Serial.print(", sensor 3: ");
+  // Serial.print(read_3);
+  // Serial.print(", sensor 4: ");
+  // Serial.print(read_4);
+  // Serial.print(", sensor 5: ");
+  // Serial.print(read_5);
+  // Serial.print(", sensor 6: ");
+  // Serial.println(read_6);
 
   // calcuates the weighted average and determines the pid speed
   weighted_average = ((read_1 * 3.25) + (read_2 * 1.95) + (read_3 * 0.65) + (read_4 * -0.65) + (read_5 * -1.95) + (read_6 * -3.25)) / (read_1 + read_2 + read_3 + read_4 + read_5 + read_6);
-  Serial.println(weighted_average);
+  // Serial.println(weighted_average);
 
   pid(weighted_average);
 }
@@ -114,10 +148,10 @@ void loop()
   -----------------------------------------------------------------------------*/
 void slaveWrite(int leftMotor, int rightMotor)
 {
-  Serial.print("Left Motor: ");
-  Serial.print(leftMotor);
-  Serial.print(" Right Motor: ");
-  Serial.println(rightMotor);
+  // Serial.print("Left Motor: ");
+  // Serial.print(leftMotor);
+  // Serial.print(" Right Motor: ");
+  // Serial.println(rightMotor);
 
   WirePacker packer;
 
@@ -126,6 +160,28 @@ void slaveWrite(int leftMotor, int rightMotor)
 
   packer.write((byte)((rightMotor & 0x0000FF00) >> 8));
   packer.write((byte)(rightMotor & 0x000000FF));
+
+  packer.write((byte)((read_1 & 0x0000FF00) >> 8));
+  packer.write((byte)(read_1 & 0x000000FF));
+
+  packer.write((byte)((read_2 & 0x0000FF00) >> 8));
+  packer.write((byte)(read_2 & 0x000000FF));
+
+  packer.write((byte)((read_3 & 0x0000FF00) >> 8));
+  packer.write((byte)(read_3 & 0x000000FF));
+
+  packer.write((byte)((read_4 & 0x0000FF00) >> 8));
+  packer.write((byte)(read_4 & 0x000000FF));
+
+  packer.write((byte)((read_5 & 0x0000FF00) >> 8));
+  packer.write((byte)(read_5 & 0x000000FF));
+
+  packer.write((byte)((read_6 & 0x0000FF00) >> 8));
+  packer.write((byte)(read_6 & 0x000000FF));
+
+  int ultrasonic_sensor = sonar.ping_cm();
+  packer.write((byte)((ultrasonic_sensor & 0x0000FF00) >> 8));
+  packer.write((byte)(ultrasonic_sensor & 0x000000FF));
 
   packer.end();
 
@@ -146,7 +202,6 @@ void slaveWrite(int leftMotor, int rightMotor)
 void pid(float weighted_average)
 {
   int stable_speed = 190;
-  float kp = 100, kd = 0, ki = 0.45;
 
   static float previous = 0;
   static float integral = 0;
