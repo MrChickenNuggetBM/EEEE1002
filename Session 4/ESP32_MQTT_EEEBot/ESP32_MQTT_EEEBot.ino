@@ -26,12 +26,14 @@
 #define PWMc 26
 #define PWMd 25
 
-#define LED_PIN 16
+#define RED_PIN 16
+#define YELLOW_PIN 17
 
 float kp = 100, kd = 0, ki = 0.45;
 int kp_change = 0, ki_change = 0, kd_change = 0;
 
-String toggle = "off";
+String toggle_red = "off";
+String toggle_yellow = "off";
 
 // I2C and motor global variables
 void receiveEvent(int howMany);
@@ -54,8 +56,8 @@ int base_speed;
 int speed_change = 0;
 
 // Wifi global variables
-const char *ssid = "B08Ghali was not an imposter";
-const char *password = "0eeymg20";
+const char *ssid = "it_burns_when_IP";
+const char *password = "pinchpinch";
 
 const char *mqtt_server = "192.168.2.1"; // MQTT Broker IP address
 
@@ -69,7 +71,8 @@ int16_t read_1 = 0, read_2 = 0, read_3 = 0, read_4 = 0, read_5 = 0, read_6 = 0, 
 
 void setup()
 {
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(YELLOW_PIN, OUTPUT);
 
   Serial.begin(115200);
 
@@ -118,13 +121,22 @@ void setup()
 
 void loop()
 {
-  if (toggle == "off")
+  if (toggle_red == "off")
   {
-    digitalWrite(LED_PIN, LOW);
+    digitalWrite(RED_PIN, LOW);
   }
-  else if (toggle == "on")
+  else if (toggle_red == "on")
   {
-    digitalWrite(LED_PIN, HIGH);
+    digitalWrite(RED_PIN, HIGH);
+  }
+
+  if (toggle_yellow == "off")
+  {
+    digitalWrite(YELLOW_PIN, LOW);
+  }
+  else if (toggle_yellow == "on")
+  {
+    digitalWrite(YELLOW_PIN, HIGH);
   }
 
   WireSlave.update();
@@ -141,8 +153,7 @@ void loop()
   {
     lastMsg = now;
 
-    // sends the encoder data
-
+    // Add your own code here i.e. sensor measurements, publish topics & subscribe topics for GPIO control
     char encoderString[8];
     encoderCount = encoder.getCount();
 
@@ -156,46 +167,49 @@ void loop()
     dtostrf(read_1, 1, 0, read1String);
     // Serial.print("Read 1: ");
     // Serial.println(read1String);
-    client.publish("esp32/IRRead1", read1String);
+    client.publish("mgesp32/IRRead1", read1String);
 
     char read2String[8];
 
-    dtostrf(read_2, 2, 0, read2String);
+    dtostrf(read_2, 1, 0, read2String);
     // Serial.print("Read 2: ");
     // Serial.println(read2String);
     client.publish("esp32/IRRead2", read2String);
 
     char read3String[8];
 
-    dtostrf(read_3, 3, 0, read3String);
+    dtostrf(read_3, 1, 0, read3String);
     // Serial.print("Read 3: ");
     // Serial.println(read3String);
     client.publish("esp32/IRRead3", read3String);
 
     char read4String[8];
 
-    dtostrf(read_4, 4, 0, read4String);
+    dtostrf(read_4, 1, 0, read4String);
     // Serial.print("Read 4: ");
     // Serial.println(read4String);
     client.publish("esp32/IRRead4", read4String);
 
     char read5String[8];
 
-    dtostrf(read_5, 5, 0, read5String);
+    dtostrf(read_5, 1, 0, read5String);
     // Serial.print("Read 5: ");
     // Serial.println(read5String);
     client.publish("esp32/IRRead5", read5String);
 
     char read6String[8];
 
-    dtostrf(read_6, 6, 0, read6String);
+    dtostrf(read_6, 1, 0, read6String);
     // Serial.print("Read 6: ");
     // Serial.println(read6String);
     client.publish("esp32/IRRead6", read6String);
 
-    // Add your own code here i.e. sensor measurements, publish topics & subscribe topics for GPIO control
-    // --
+    char ultrasonicString[8];
 
+    dtostrf(ultrasonic_sensor, 1, 0, ultrasonicString);
+     Serial.print("Ultrasonic: ");
+     Serial.println(ultrasonicString);
+    client.publish("esp32/ultrasonic", ultrasonicString);
     // --
   }
 }
@@ -229,7 +243,7 @@ void requestEvent(void)
     kd_change = 0;
   }
   else if (speed_change == 1) {
-        WireSlave.print("-s");
+    WireSlave.print("-s");
     WireSlave.write(base_speed);
     Serial.println("-s");
     Serial.println(base_speed);
@@ -275,8 +289,8 @@ void receiveEvent(int howMany)
   uint8_t read_6_16_9 = WireSlave.read(); // receive bits 16 to 9 of y (one byte)
   uint8_t read_6_8_1 = WireSlave.read();  // receive bits 8 to 1 of y (one byte)
 
-  uint8_t ultrasonic_sensor_16_9 = WireSlave.read(); // receive bits 16 to 9 of y (one byte)
-  uint8_t ultrasonic_sensor_8_1 = WireSlave.read();  // receive bits 8 to 1 of y (one byte)
+  uint8_t ultrasonic_sensor16_9 = WireSlave.read(); // receive bits 16 to 9 of y (one byte)
+  uint8_t ultrasonic_sensor8_1 = WireSlave.read();  // receive bits 8 to 1 of y (one byte)
 
   leftMotor_speed = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;    // combine the two bytes into a 16 bit number
   rightMotor_speed = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1; // combine the two bytes into a 16 bit number
@@ -286,13 +300,14 @@ void receiveEvent(int howMany)
   read_4 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;           // combine the two bytes into a 16 bit number
   read_5 = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;             // combine the two bytes into a 16 bit number
   read_6 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;           // combine the two bytes into a 16 bit number
-  ultrasonic_sensor = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;  // combine the two bytes into a 16 bit number
+  ultrasonic_sensor = (ultrasonic_sensor16_9 << 8) | ultrasonic_sensor8_1;  // combine the two bytes into a 16 bit number
 
-  // Serial.print("Left Motor: ");
-  // Serial.print(leftMotor_speed);
-  // Serial.print("\t");
-  // Serial.print("Right Motor: ");
-  // Serial.println(rightMotor_speed);
+  Serial.println(ultrasonic_sensor);
+  //   Serial.print("Left Motor: ");
+  //   Serial.print(leftMotor_speed);
+  //   Serial.print("\t");
+  //   Serial.print("Right Motor: ");
+  //   Serial.println(rightMotor_speed);
 
   runLeftMotor(leftMotor_speed);
   runRightMotor(rightMotor_speed);
@@ -357,8 +372,9 @@ void reconnect()
       client.subscribe("esp32/kp");
       client.subscribe("esp32/ki");
       client.subscribe("esp32/kd");
-      client.subscribe("esp32/led");
       client.subscribe("esp32/speed");
+      client.subscribe("esp32/yellow");
+      client.subscribe("esp32/red");
       // --
     }
     else
@@ -407,19 +423,26 @@ void callback(char *topic, byte *message, unsigned int length)
     Serial.print("kd = ");
     Serial.println(kd);
   }
-  else if (String(topic) == "esp32/led")
-  {
-    if (messageTemp == "true")
-      toggle = "on";
-    else if (messageTemp == "false")
-      toggle = "off";
-  }
   else if (String(topic) == "esp32/speed")
   {
     base_speed = messageTemp.toInt();
     speed_change = 1;
     Serial.print("Speed Change = ");
     Serial.println(base_speed);
+  }
+  else if (String(topic) == "esp32/red")
+  {
+    if (messageTemp == "true")
+      toggle_red = "on";
+    else if (messageTemp == "false")
+      toggle_red = "off";
+  }
+  else if (String(topic) == "esp32/yellow")
+  {
+    if (messageTemp == "true")
+      toggle_yellow = "on";
+    else if (messageTemp == "false")
+      toggle_yellow = "off";
   }
 
   // Add your subscribed topics here i.e. statements to control GPIOs with MQTT

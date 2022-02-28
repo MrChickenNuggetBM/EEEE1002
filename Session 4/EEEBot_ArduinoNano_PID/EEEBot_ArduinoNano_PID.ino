@@ -160,6 +160,8 @@ void slaveWrite(int leftMotor, int rightMotor)
   // Serial.print(" Right Motor: ");
   // Serial.println(rightMotor);
 
+  int ultrasonic_sensor = sonar.ping_cm();
+
   WirePacker packer;
 
   packer.write((byte)((leftMotor & 0x0000FF00) >> 8));
@@ -186,7 +188,6 @@ void slaveWrite(int leftMotor, int rightMotor)
   packer.write((byte)((read_6 & 0x0000FF00) >> 8));
   packer.write((byte)(read_6 & 0x000000FF));
 
-  int ultrasonic_sensor = sonar.ping_cm();
   packer.write((byte)((ultrasonic_sensor & 0x0000FF00) >> 8));
   packer.write((byte)(ultrasonic_sensor & 0x000000FF));
 
