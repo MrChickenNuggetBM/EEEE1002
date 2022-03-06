@@ -56,8 +56,8 @@ int base_speed;
 int speed_change = 0;
 
 // Wifi global variables
-const char *ssid = "it_burns_when_IP";
-const char *password = "pinchpinch";
+const char *ssid = "B08Ghali was not an imposter";
+const char *password = "0eeymg20";
 
 const char *mqtt_server = "192.168.2.1"; // MQTT Broker IP address
 

@@ -51,12 +51,12 @@ void loop()
   read_5 = constrain(read_5, min_5, max_);
   read_6 = constrain(read_6, min_6, max_);
 
-  read_1 = map(read_1, min_1, max_, 0, 255);
-  read_2 = map(read_2, min_2, max_, 0, 255);
-  read_3 = map(read_3, min_3, max_, 0, 255);
-  read_4 = map(read_4, min_4, max_, 0, 255);
-  read_5 = map(read_5, min_5, max_, 0, 255);
-  read_6 = map(read_6, min_6, max_, 0, 255);
+  read_1 = map(read_1, min_1, max_, 1, 255);
+  read_2 = map(read_2, min_2, max_, 1, 255);
+  read_3 = map(read_3, min_3, max_, 1, 255);
+  read_4 = map(read_4, min_4, max_, 1, 255);
+  read_5 = map(read_5, min_5, max_, 1, 255);
+  read_6 = map(read_6, min_6, max_, 1, 255);
 
   read_1 = 255 - read_1;
   read_2 = 255 - read_2;
@@ -80,7 +80,7 @@ void loop()
 
   weighted_average = ((read_1 * 3.25) + (read_2 * 1.95) + (read_3 * 0.65) + (read_4 * -0.65) + (read_5 * -1.95) + (read_6 * -3.25)) / (read_1 + read_2 + read_3 + read_4 + read_5 + read_6);
 
-    Serial.println(weighted_average);
+  Serial.println(weighted_average);
 
   if (weighted_average > error) {
         Serial.println("Left");
