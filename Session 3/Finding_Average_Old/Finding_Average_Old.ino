@@ -1,5 +1,10 @@
+// #include <MPU6050_tockn.h> //IMU
+// #include <NewPing.h>       // HC-SR04
 #include <Arduino.h>
+#include <WirePacker.h> //to send data to ESP32
+#include <Wire.h>
 
+#define I2C_SLAVE_ADDR 0x04
 #define OPTICAL_1 A0
 #define OPTICAL_2 A1
 #define OPTICAL_3 A2
@@ -55,4 +60,36 @@ void loop()
     Serial.println(read_6_sum/10000);
     while (1);
   }
+}
+/*---------------------------------------------------------------------------
+   Inputs:
+      int leftMotor, this is the ledcwrite signal send to the left motor
+      int rightMotor, this is the ledcwrite signal send to the right motor
+
+  sends signals to the ESP32 so that it can drive the motors
+  -----------------------------------------------------------------------------*/
+void slaveWrite(int leftMotor, int rightMotor)
+{
+  WirePacker packer;
+
+  packer.write((byte)((leftMotor & 0x0000FF00) >> 8));
+  packer.write((byte)(leftMotor & 0x000000FF));
+
+  packer.write((byte)((rightMotor & 0x0000FF00) >> 8));
+  packer.write((byte)(rightMotor & 0x000000FF));
+
+  Serial.println((byte)(rightMotor & 0xFFFFFFFF));
+
+  packer.end();
+
+  Wire.beginTransmission(I2C_SLAVE_ADDR);
+  while (packer.available())
+  {
+    Wire.write(packer.read());
+  }
+  Serial.print("Left Motor: ");
+  Serial.print(leftMotor);
+  Serial.print(" Right Motor: ");
+  Serial.println(rightMotor);
+  Wire.endTransmission();
 }
