@@ -40,19 +40,21 @@ void loop()
 
   count++;
 
-  if (count == 10000) {
+  if (count == 10000)
+  {
     Serial.print("s1: ");
-    Serial.println(read_1_sum/10000);
+    Serial.println(read_1_sum / 10000);
     Serial.print("s2: ");
-    Serial.println(read_2_sum/10000);
+    Serial.println(read_2_sum / 10000);
     Serial.print("s3: ");
-    Serial.println(read_3_sum/10000);
+    Serial.println(read_3_sum / 10000);
     Serial.print("s4: ");
-    Serial.println(read_4_sum/10000);
+    Serial.println(read_4_sum / 10000);
     Serial.print("s5: ");
-    Serial.println(read_5_sum/10000);
+    Serial.println(read_5_sum / 10000);
     Serial.print("s6: ");
-    Serial.println(read_6_sum/10000);
-    while (1);
+    Serial.println(read_6_sum / 10000);
+    while (1)
+      ;
   }
 }

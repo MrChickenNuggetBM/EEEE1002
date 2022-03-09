@@ -167,7 +167,7 @@ void loop()
     dtostrf(read_1, 1, 0, read1String);
     // Serial.print("Read 1: ");
     // Serial.println(read1String);
-    client.publish("mgesp32/IRRead1", read1String);
+    client.publish("esp32/IRRead1", read1String);
 
     char read2String[8];
 
@@ -207,8 +207,8 @@ void loop()
     char ultrasonicString[8];
 
     dtostrf(ultrasonic_sensor, 1, 0, ultrasonicString);
-     Serial.print("Ultrasonic: ");
-     Serial.println(ultrasonicString);
+    Serial.print("Ultrasonic: ");
+    Serial.println(ultrasonicString);
     client.publish("esp32/ultrasonic", ultrasonicString);
     // --
   }
@@ -217,7 +217,6 @@ void loop()
 // this function executes when data is requested from the master device
 void requestEvent(void)
 {
-  String message;
   if (kp_change == 1)
   {
     WireSlave.print("-p");
@@ -242,7 +241,8 @@ void requestEvent(void)
     Serial.println(kd);
     kd_change = 0;
   }
-  else if (speed_change == 1) {
+  else if (speed_change == 1)
+  {
     WireSlave.print("-s");
     WireSlave.write(base_speed);
     Serial.println("-s");
@@ -292,15 +292,15 @@ void receiveEvent(int howMany)
   uint8_t ultrasonic_sensor16_9 = WireSlave.read(); // receive bits 16 to 9 of y (one byte)
   uint8_t ultrasonic_sensor8_1 = WireSlave.read();  // receive bits 8 to 1 of y (one byte)
 
-  leftMotor_speed = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;    // combine the two bytes into a 16 bit number
-  rightMotor_speed = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1; // combine the two bytes into a 16 bit number
-  read_1 = (read_1_16_9 << 8) | read_1_8_1;                             // combine the two bytes into a 16 bit number
-  read_2 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;           // combine the two bytes into a 16 bit number
-  read_3 = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;             // combine the two bytes into a 16 bit number
-  read_4 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;           // combine the two bytes into a 16 bit number
-  read_5 = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;             // combine the two bytes into a 16 bit number
-  read_6 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;           // combine the two bytes into a 16 bit number
-  ultrasonic_sensor = (ultrasonic_sensor16_9 << 8) | ultrasonic_sensor8_1;  // combine the two bytes into a 16 bit number
+  leftMotor_speed = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;       // combine the two bytes into a 16 bit number
+  rightMotor_speed = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;    // combine the two bytes into a 16 bit number
+  read_1 = (read_1_16_9 << 8) | read_1_8_1;                                // combine the two bytes into a 16 bit number
+  read_2 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;              // combine the two bytes into a 16 bit number
+  read_3 = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;                // combine the two bytes into a 16 bit number
+  read_4 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;              // combine the two bytes into a 16 bit number
+  read_5 = (leftMotor_speed16_9 << 8) | leftMotor_speed8_1;                // combine the two bytes into a 16 bit number
+  read_6 = (rightMotor_speed16_9 << 8) | rightMotor_speed8_1;              // combine the two bytes into a 16 bit number
+  ultrasonic_sensor = (ultrasonic_sensor16_9 << 8) | ultrasonic_sensor8_1; // combine the two bytes into a 16 bit number
 
   Serial.println(ultrasonic_sensor);
   //   Serial.print("Left Motor: ");

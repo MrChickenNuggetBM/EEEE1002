@@ -65,33 +65,36 @@ void loop()
   read_5 = 255 - read_5;
   read_6 = 255 - read_6;
 
-    Serial.print("sensor 1: ");
-    Serial.print(read_1);
-    Serial.print(", sensor 2: ");
-    Serial.print(read_2);
-    Serial.print(", sensor 3: ");
-    Serial.print(read_3);
-    Serial.print(", sensor 4: ");
-    Serial.print(read_4);
-    Serial.print(", sensor 5: ");
-    Serial.print(read_5);
-    Serial.print(", sensor 6: ");
-    Serial.println(read_6);
+  Serial.print("sensor 1: ");
+  Serial.print(read_1);
+  Serial.print(", sensor 2: ");
+  Serial.print(read_2);
+  Serial.print(", sensor 3: ");
+  Serial.print(read_3);
+  Serial.print(", sensor 4: ");
+  Serial.print(read_4);
+  Serial.print(", sensor 5: ");
+  Serial.print(read_5);
+  Serial.print(", sensor 6: ");
+  Serial.println(read_6);
 
   weighted_average = ((read_1 * 3.25) + (read_2 * 1.95) + (read_3 * 0.65) + (read_4 * -0.65) + (read_5 * -1.95) + (read_6 * -3.25)) / (read_1 + read_2 + read_3 + read_4 + read_5 + read_6);
 
   Serial.println(weighted_average);
 
-  if (weighted_average > error) {
-        Serial.println("Left");
+  if (weighted_average > error)
+  {
+    Serial.println("Left");
     slaveWrite(165, 185);
   }
-  else if (weighted_average < -error) {
-        Serial.println("Right");
+  else if (weighted_average < -error)
+  {
+    Serial.println("Right");
     slaveWrite(185, 165);
   }
-  else {
-        Serial.println("Forward");
+  else
+  {
+    Serial.println("Forward");
     slaveWrite(170, 170);
   }
 }
@@ -119,10 +122,10 @@ void slaveWrite(int leftMotor, int rightMotor)
   {
     Wire.write(packer.read());
   }
-    Serial.print("Left Motor: ");
-    Serial.print(leftMotor);
-    Serial.print(" Right Motor: ");
-    Serial.println(rightMotor);
+  Serial.print("Left Motor: ");
+  Serial.print(leftMotor);
+  Serial.print(" Right Motor: ");
+  Serial.println(rightMotor);
   Wire.endTransmission();
   delay(100);
 }

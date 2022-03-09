@@ -47,7 +47,7 @@ void loop()
     {
       String flag;
       while (1 < slaveReq.available())
-      { // loop through all but the last byte
+      {                           // loop through all but the last byte
         char c = slaveReq.read(); // receive byte as a character
         flag += c;
       }
@@ -86,7 +86,7 @@ void loop()
     lastMillis = millis();
   }
 
-    Serial.println("working");
+  Serial.println("working");
 
   float weighted_average = 0;
 
@@ -158,7 +158,7 @@ void loop()
   -----------------------------------------------------------------------------*/
 void slaveWrite(int leftMotor, int rightMotor)
 {
-    Serial.println("working");
+  Serial.println("working");
   // Serial.print("Left Motor: ");
   // Serial.print(leftMotor);
   // Serial.print(" Right Motor: ");
@@ -204,7 +204,7 @@ void slaveWrite(int leftMotor, int rightMotor)
   }
   Wire.endTransmission();
   delay(100);
-    Serial.println("working");
+  Serial.println("working");
 }
 /*---------------------------------------------------------------------------
    Inputs:
